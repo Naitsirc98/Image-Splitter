@@ -2,21 +2,52 @@ package naitsirc98.imagesplitter;
 
 import java.util.ArrayList;
 
-public final class SplittedImageList extends ArrayList<SplittedImage> {
+/**
+ * An {@code ArrayList} of {@code ImageBounds}. 
+ * 
+ * <p>It just add three additional methods:</p>
+ * 
+ * <ul>
+ * 
+ * <p>{@code blend}: combine two or more subimages to make only one. Useful for subimages that have particles</p>
+ * <p>{@code removeRange}: removes the elements in the given range</p>
+ * <p>{@code getRange}: gets elements in the given range as an array</p>
+ * </ul>
+ * 
+ * 
+ * */
+public final class SplittedImageList extends ArrayList<ImageBounds> {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Default constructor
+	 * */
 	public SplittedImageList() {
 		super();
 	}
 	
-	public SplittedImageList(int size) {
-		super(size);
+	/**
+	 * Constructs a {@code SplittedImageList} with the specified initial capacity.
+	 * 
+	 * @param capacity the initial capacity
+	 **/
+	public SplittedImageList(int capacity) {
+		super(capacity);
 	}
 
-	public SplittedImage blend(int... indices) {
+	/**
+	 * Combines two or more subimages into one, and replaces the old independent subimages by
+	 * the new one. The subimages must be consecutive.
+	 * 
+	 * @param indices the range of subimages
+	 * 
+	 * @return the result subimage
+	 * 
+	 * */
+	public ImageBounds blend(int... indices) {
 		
-		SplittedImage result = SplittedImage.blend(get(indices[0], indices[indices.length-1]));
+		ImageBounds result = ImageBounds.blend(getRange(indices[0], indices[indices.length-1]));
 		
 		removeRange(indices[0], indices[indices.length - 1]);
 		
@@ -25,13 +56,31 @@ public final class SplittedImageList extends ArrayList<SplittedImage> {
 		return result;
 	}
 	
-	public void remove(int from, int to) {
-		removeRange(from, to);
+	/**
+	 * Removes the elements that are between from and to, both included.
+	 * from must be <= to.
+	 * 
+	 * @param from start index
+	 * @param to end index
+	 * 
+	 * */
+	public void removeRange(int from, int to) {
+		super.removeRange(from, to+1);
 	}
 	
-	public SplittedImage[] get(int from, int to) {
+	/**
+	 * Gets the elements that are between from and to, both included.
+	 * from must be <= to.
+	 * 
+	 * @param from start index
+	 * @param to end index
+	 * 
+	 * @return the elements in the range [from, to] as an array
+	 * 
+	 **/
+	public ImageBounds[] getRange(int from, int to) {
 		
-		SplittedImage[] array = new SplittedImage[to-from+1];
+		ImageBounds[] array = new ImageBounds[to-from+1];
 		
 		for(int i = from;i <= to;i++) {
 			array[i-from] = get(i);

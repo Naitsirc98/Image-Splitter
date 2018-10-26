@@ -15,7 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import naitsirc98.imagesplitter.ImageSplitter;
-import naitsirc98.imagesplitter.SplittedImage;
+import naitsirc98.imagesplitter.ImageBounds;
 
 public class SwingExample extends JPanel {
 
@@ -52,7 +52,7 @@ public class SwingExample extends JPanel {
 
 		ImageSplitter splitter = new ImageSplitter(pixels, image.getWidth(), image.getHeight());
 		
-		List<SplittedImage> sprites = splitter.split();
+		List<ImageBounds> sprites = splitter.split();
 
 		// GUI
 
@@ -76,9 +76,9 @@ public class SwingExample extends JPanel {
 
 
 	private BufferedImage image;
-	private List<SplittedImage> sprites;
+	private List<ImageBounds> sprites;
 
-	public SwingExample(BufferedImage image, List<SplittedImage> sprites) {
+	public SwingExample(BufferedImage image, List<ImageBounds> sprites) {
 		this.image = image;
 		this.sprites = sprites;
 	}
@@ -95,7 +95,7 @@ public class SwingExample extends JPanel {
 
 		int i = 0;
 
-		for(SplittedImage r : sprites) {
+		for(ImageBounds r : sprites) {
 
 			g.drawRect(r.getX()+offset,r.getY()+offset,r.getWidth(),r.getHeight());
 			g.drawString(String.valueOf(i), r.getX()+offset, r.getY()+offset);

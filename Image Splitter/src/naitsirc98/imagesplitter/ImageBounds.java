@@ -1,26 +1,44 @@
 package naitsirc98.imagesplitter;
 
-public final class SplittedImage implements Comparable<SplittedImage> {
+/**
+ * An {@code ImageBounds} is an object that represents the data of a subimage relative to the original image.
+ * 
+ * <p>Instances of this class only hold data about the bounds and position of the subimage in the original image,
+ * but not the subimage itself, so the programmer have to extract the desired subimage with the data provided by this
+ * object</p>
+ * 
+ * <p>Objects of this class are totally modifiable and can be compared.</p>
+ * 
+ * */
+public final class ImageBounds implements Comparable<ImageBounds> {
 	
-	public static SplittedImage min(SplittedImage a, SplittedImage b) {
+	public static ImageBounds min(ImageBounds a, ImageBounds b) {
 		return a.compareTo(b) < 0 ? a : b;
 	}	
 	
-	public static SplittedImage max(SplittedImage a, SplittedImage b) {
+	public static ImageBounds max(ImageBounds a, ImageBounds b) {
 		return a.compareTo(b) > 0 ? a : b;
 	}
 	
-	public static SplittedImage blend(SplittedImage... bounds) {
+	/**
+	 * Combines two or more ImageBounds into one. Original instances are not modified.
+	 * 
+	 * @param bounds subimages to blend.
+	 * 
+	 * @return the result subimage
+	 * 
+	 * */
+	public static ImageBounds blend(ImageBounds... bounds) {
 		
 		if(bounds == null || bounds.length == 0) {
 			throw new IllegalArgumentException();
 		}
 		
-		final SplittedImage result = bounds[0].clone();
+		final ImageBounds result = bounds[0].clone();
 		
 		for(int i = 1;i < bounds.length;i++) {
 			
-			final SplittedImage b = bounds[i];
+			final ImageBounds b = bounds[i];
 			
 			if(!bounds[i-1].isConsecutive(b)) {
 				throw new IllegalStateException("Images are not consecutive: "+bounds[i-1]+", "+b);
@@ -49,24 +67,31 @@ public final class SplittedImage implements Comparable<SplittedImage> {
 	int x, y;
 	int width = 1, height = 1;
 	int row = -1, column = -1;
-	int id;
 	
-	public SplittedImage() {
+	public ImageBounds() {
 		x = y = 0;
 	}
 	
-	public SplittedImage(int x, int y) {
+	public ImageBounds(int x, int y) {
 		this(x, y, 1, 1);
 	}
 	
-	public SplittedImage(int x, int y, int width, int height) {
+	public ImageBounds(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
 	}
 	
-	public boolean intersects(SplittedImage other) {
+	/**
+	 * Checks whether this two ImageBounds geometrically intersects or not.
+	 * 
+	 * @param other another subimage
+	 * 
+	 * @return true if intersects, false otherwise
+	 * 
+	 * */
+	public boolean intersects(ImageBounds other) {
 		
 		if(other.width <= 0 || other.height <= 0 || width <= 0 || height <= 0) {
 			return false;
@@ -84,6 +109,15 @@ public final class SplittedImage implements Comparable<SplittedImage> {
 		
 	}
 	
+	
+	/**
+	 * Checks whether this two ImageBounds has the given 2D point or not.
+	 * 
+	 * @param x coordinate x
+	 * @param y coordinate y
+	 * 
+	 * @return true if contains the coordinates, false otherwise
+	 */
 	public boolean contains(int x, int y) {
 		
 		int w = width;
@@ -105,11 +139,28 @@ public final class SplittedImage implements Comparable<SplittedImage> {
 		
 	}
 	
-	public int distance(SplittedImage other) {
+	/**
+	 * Returns the distance between the two subimages.
+	 * 
+	 * @param other another subimage
+	 * 
+	 * @return the distance between them
+	 * 
+	 * */
+	public int distance(ImageBounds other) {
 		return (int) Math.sqrt(Math.pow(x-other.x, 2) + Math.pow(y-other.y,2));
 	}
 	
-	public boolean isConsecutive(SplittedImage other) {
+	/**
+	 * Checks whether two subimages are consecutive or not. Two subimages are consecutive if they are next to each other,
+	 * horizontally or vertically. Both subimages should be from the same original image.
+	 * 
+	 * @param other another image
+	 * 
+	 * @return true if they are consecutive, false otherwise
+	 * 
+	 * */
+	public boolean isConsecutive(ImageBounds other) {
 		
 		final int dr = Math.abs(row - other.row);
 		final int dc = Math.abs(column - other.column);
@@ -132,10 +183,6 @@ public final class SplittedImage implements Comparable<SplittedImage> {
 
 	public void setY(int y) {
 		this.y = y;
-	}
-	
-	public int getID() {
-		return id;
 	}
 	
 	public int getCenterX() {
@@ -183,9 +230,9 @@ public final class SplittedImage implements Comparable<SplittedImage> {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof SplittedImage))
+		if (!(obj instanceof ImageBounds))
 			return false;
-		SplittedImage other = (SplittedImage) obj;
+		ImageBounds other = (ImageBounds) obj;
 		if (height != other.height)
 			return false;
 		if (width != other.width)
@@ -203,14 +250,13 @@ public final class SplittedImage implements Comparable<SplittedImage> {
 	}
 
 	@Override
-	public int compareTo(SplittedImage other) {
+	public int compareTo(ImageBounds other) {
 		return Integer.compare(getSize(), other.getSize());
 	}
 	
 	@Override
-	public SplittedImage clone() {
-		final SplittedImage clone = new SplittedImage(x,y,width,height);
-		clone.id = id;
+	public ImageBounds clone() {
+		final ImageBounds clone = new ImageBounds(x,y,width,height);
 		clone.row = row;
 		clone.column = column;
 		return clone;

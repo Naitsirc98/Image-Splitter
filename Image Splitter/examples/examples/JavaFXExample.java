@@ -15,10 +15,10 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritablePixelFormat;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import naitsirc98.imagesplitter.SplittedImage;
 import naitsirc98.imagesplitter.ImageSplitter;
-import naitsirc98.imagesplitter.SplittedImageList;
 import naitsirc98.imagesplitter.ImageSplitter.BackgroundType;
+import naitsirc98.imagesplitter.ImageBounds;
+import naitsirc98.imagesplitter.SplittedImageList;
 
 public class JavaFXExample extends Application {
 	
@@ -50,9 +50,9 @@ public class JavaFXExample extends Application {
 		
 		ImageSplitter splitter = new ImageSplitter(buffer, (int)image.getWidth(), (int)image.getHeight());
 		
-		splitter.setBackground(BackgroundType.TRANSPARENT);
+		splitter.setBackground(BackgroundType.TRANSPARENT_0x33);
 		
-		SplittedImageList sprites = splitter.split(9, 9);
+		SplittedImageList sprites = splitter.split();
 		
 		GraphicsContext g = canvas.getGraphicsContext2D();
 		
@@ -62,7 +62,7 @@ public class JavaFXExample extends Application {
 		
 		for(int i = 0;i < sprites.size();i++) {
 			
-			SplittedImage b = sprites.get(i);
+			ImageBounds b = sprites.get(i);
 			
 			g.strokeRect(b.getX(), b.getY(), b.getWidth(), b.getHeight());
 			
